@@ -1,4 +1,9 @@
-// FAULT: a live secret key committed to the repository.
-const STRIPE_SECRET_KEY = "sk_live_NOTAREALKEY1234";
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+if (!STRIPE_SECRET_KEY) {
+  throw new Error(
+    "Missing required environment variable: STRIPE_SECRET_KEY"
+  );
+}
 
 module.exports = { STRIPE_SECRET_KEY };

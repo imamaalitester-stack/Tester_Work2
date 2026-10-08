@@ -4,9 +4,17 @@ const orders = require("./routes/orders");
 const app = express();
 app.use(express.json());
 
-// FAULT: any website may call this API with the browser's credentials.
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  const origin = req.headers["origin"];
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
   next();
 });
 
